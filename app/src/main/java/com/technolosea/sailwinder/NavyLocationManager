@@ -17,7 +17,7 @@ public class NavyLocationManager
         this.manager_activity = _manager_activity;
     }
 
-    public boolean checkGooglePlayServices(Activity activity)
+    public boolean checkGooglePlayServices()
     {
         int conneection_status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.manager_activity);
         if (conneection_status != ConnectionResult.SUCCESS)
