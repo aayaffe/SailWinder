@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Location lastLocation;
     private String userId = "amit";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,5 +92,6 @@ public class MainActivity extends AppCompatActivity {
         if (!name.isEmpty()){
             userId = name;
         }
+
     }
 }
