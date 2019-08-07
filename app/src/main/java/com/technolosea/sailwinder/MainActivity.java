@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         dbLayer = new DbLayer();
         dbLayer.addTrackPoint("amit", new GeoPoint(0, 0), new Timestamp(new Date()));
-
         dbLayer.updateMarks();
     }
 }
