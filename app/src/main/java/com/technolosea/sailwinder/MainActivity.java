@@ -1,19 +1,32 @@
 package com.technolosea.sailwinder;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.GeoPoint;
-import java.util.Date;
+import android.app.Activity;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-    DbLayer dbLayer;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        dbLayer = new DbLayer();
-        dbLayer.addTrackPoint("amit", new GeoPoint(0, 0), new Timestamp(new Date()));
-        dbLayer.updateMarks();
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+public class NavyLocationManager
+{
+    private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+
+    public boolean checkGooglePlayServices(Activity activity)
+    {
+        int conneection_status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity);
+        if (conneection_status != ConnectionResult.SUCCESS)
+        {
+            GoogleApiAvailability.getInstance().getErrorDialog( activity, conneection_status,
+                    REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+
+            return false;
+        }
+        Toast toast = Toast.makeText(activity,
+                "Successfully connected to Google location API",
+                Toast.LENGTH_SHORT);
+
+        toast.show();
+
+        return true;
+
     }
 }
