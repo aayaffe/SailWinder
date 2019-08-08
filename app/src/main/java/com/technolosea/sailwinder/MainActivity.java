@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -19,6 +20,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -47,8 +49,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
+                    List<Mark> marks = dbLayer.getMarks();
                     lastLocation = location;
+                    if (marks.size()>0) {
+                        Mark nextMark = marks.get(0);
+                        ((TextView)findViewById(R.id.rngTextView)).setText(String.valueOf(Math.round(GeoCalc.getDistance(location.getLatitude(),location.getLongitude(),nextMark.coordinate1.getLatitude(),nextMark.coordinate1.getLongitude()))));
+                        ((TextView)findViewById(R.id.ditTextView)).setText(String.valueOf(Math.round(GeoCalc.getAzimuth(location.getLatitude(),location.getLongitude(),nextMark.coordinate1.getLatitude(),nextMark.coordinate1.getLongitude()))));
+                    }
+
                     dbLayer.addTrackPoint(userId, new GeoPoint(location.getLatitude(),location.getLongitude()),new Timestamp(new Date()));
+
                     Log.d(TAG,location.toString());
                 }
             }
