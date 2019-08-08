@@ -65,11 +65,36 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    protected displayEndingStatus(int endingNumber)
+    {
+        Toast toast;
+        if (endingNumber <= 3)
+            toast = Toast.makeText(this,
+                "Congratulations! you won a prize.",
+                Toast.LENGTH_SHORT);
+        else
+        {
+            toast = Toast.makeText(this,
+                "You lost. Better luck next time.",
+                Toast.LENGTH_SHORT);
+        }
+        toast.show();
+    }
+    
     @Override
     protected void onResume() {
         super.onResume();
         startLocationUpdates();
 
+        endingMak = DbLayer.getEndingMark(); 
+        Map<String, Object> user_track = DbLayer.getTrackByUserId(userId);
+        boolean is_participant_done = GeoCalc.participantHasFinished(endingMak.coordinate1, endingMark.coordinate2, user_track.get("coordinate"));
+        // TOOD: need to add here current number of finished participants and update the if condition (that checks is_participant_done) accordingly
+        if (is_participant_done)
+        {
+            // update number of finished participants
+            // print if the user is a winner (1st/2nd/3rd place) or not (at least 4th place) 
+        }
     }
 
     LocationRequest locationRequest;
