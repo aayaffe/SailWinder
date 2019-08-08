@@ -1,5 +1,7 @@
 package com.technolosea.sailwinder;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicLine;
 import net.sf.geographiclib.GeodesicMask;

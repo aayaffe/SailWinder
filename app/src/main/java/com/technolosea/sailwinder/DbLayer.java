@@ -23,7 +23,7 @@ import java.util.Map;
 public class DbLayer {
     private static final String TAG = "DbLayer";
     private List<Mark> marks = new ArrayList();
-    private Mark lastMark;
+    private static Mark lastMark;
     FirebaseFirestore db;
 
     public DbLayer() {
@@ -47,7 +47,7 @@ public class DbLayer {
                             m.gateType = GateType.valueOf(document.getString("gateType"));
                             m.order = document.getLong("order");
                             getMarks().add(m);
-                            if (m.gateType == "END")
+                            if (m.gateType == GateType.FinishLine)
                                 lastMark = m;
                         }
                     } else {
@@ -81,22 +81,38 @@ public class DbLayer {
             });
     }
 
-    public Map<String, Object> getTrackByUserId(String userId)
-    {
-        List<Map<String, Object>> tracks = db.collection("track").get();
-        for (int track_index = 0; track_index < tracks.length; ++track_index)
-        {
-            Map<String, Object> examined_track = tracks[track_index]
-            if (examined_track.get("userId") == userId)
-                return tracks[track_index];
-        }
-    }
+//    public Map<String, Object> getTrackByUserId(final String userId)
+//    {
+//        db.collection("track").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    List<Map<String, Object>> tracks = new ArrayList<>();
+//                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                        Map<String, Object> m = new HashMap<>();
+//                        m.put("userId",document.getString("userId"));
+//                        m.put("time", document.getTimestamp("time"));
+//                        m.put("coordinate", document.getGeoPoint("coordinate"));
+//                        tracks.add(m);
+//                    }
+//                    for (int track_index = 0; track_index < tracks.size(); ++track_index)
+//                    {
+//                        Map<String, Object> examined_track = tracks.get(track_index);
+//                        if (examined_track.get("userId") == userId)
+//                            return tracks.get(track_index);
+//                    }
+//                } else {
+//                    Log.w(TAG, "Error getting documents.", task.getException());
+//                }
+//            }
+//        });
+//    }
     
     public List<Mark> getMarks() {
         return marks;
     }
     
-    public Mark getEndingMark()
+    public static Mark getEndingMark()
     {
         return lastMark;
     }

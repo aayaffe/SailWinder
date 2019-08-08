@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     DbLayer dbLayer;
     private Location lastLocation;
     private String userId = "amit";
+    private Mark endingMark;
 
 
     @Override
@@ -52,9 +55,14 @@ public class MainActivity extends AppCompatActivity {
                     List<Mark> marks = dbLayer.getMarks();
                     lastLocation = location;
                     if (marks.size()>0) {
-                        Mark nextMark = marks.get(0);
-                        ((TextView)findViewById(R.id.rngTextView)).setText(String.valueOf(Math.round(GeoCalc.getDistance(location.getLatitude(),location.getLongitude(),nextMark.coordinate1.getLatitude(),nextMark.coordinate1.getLongitude()))));
-                        ((TextView)findViewById(R.id.ditTextView)).setText(String.valueOf(Math.round(GeoCalc.getAzimuth(location.getLatitude(),location.getLongitude(),nextMark.coordinate1.getLatitude(),nextMark.coordinate1.getLongitude()))));
+                        Mark nextMark = getMark(1, marks);
+                        if (nextMark!=null) {
+                            double dist = Math.round(GeoCalc.getDistance(location.getLatitude(), location.getLongitude(), nextMark.coordinate1.getLatitude(), nextMark.coordinate1.getLongitude())) / 1000;
+                            long az = Math.round(GeoCalc.getAzimuth(location.getLatitude(), location.getLongitude(), nextMark.coordinate1.getLatitude(), nextMark.coordinate1.getLongitude()));
+                            if (az < 0) az = az + 360;
+                            ((TextView) findViewById(R.id.rngTextView)).setText(String.valueOf(dist)+"km");
+                            ((TextView) findViewById(R.id.ditTextView)).setText(String.valueOf(az));
+                        }
                     }
 
                     dbLayer.addTrackPoint(userId, new GeoPoint(location.getLatitude(),location.getLongitude()),new Timestamp(new Date()));
@@ -65,7 +73,15 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    protected displayEndingStatus(int endingNumber)
+    private Mark getMark(int i, List<Mark> marks) {
+        for (Mark m:marks
+             ) { if (m.order ==i)
+                 return m;
+        }
+        return null;
+    }
+
+    protected void displayEndingStatus(int endingNumber)
     {
         Toast toast;
         if (endingNumber <= 3)
@@ -86,15 +102,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         startLocationUpdates();
 
-        endingMak = DbLayer.getEndingMark(); 
-        Map<String, Object> user_track = DbLayer.getTrackByUserId(userId);
-        boolean is_participant_done = GeoCalc.participantHasFinished(endingMak.coordinate1, endingMark.coordinate2, user_track.get("coordinate"));
+//        endingMark = DbLayer.getEndingMark();
+//        Map<String, Object> user_track = DbLayer.getTrackByUserId(userId);
+//        boolean is_participant_done = GeoCalc.participantHasFinished(endingMak.coordinate1, endingMark.coordinate2, user_track.get("coordinate"));
         // TOOD: need to add here current number of finished participants and update the if condition (that checks is_participant_done) accordingly
-        if (is_participant_done)
-        {
-            // update number of finished participants
-            // print if the user is a winner (1st/2nd/3rd place) or not (at least 4th place) 
-        }
+//        if (is_participant_done)
+//        {
+//            // update number of finished participants
+//            // print if the user is a winner (1st/2nd/3rd place) or not (at least 4th place)
+//        }
     }
 
     LocationRequest locationRequest;
