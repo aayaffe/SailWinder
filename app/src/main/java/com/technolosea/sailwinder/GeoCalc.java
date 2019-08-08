@@ -14,4 +14,14 @@ public class GeoCalc {
         GeodesicLine line = geod.InverseLine(lat1,lon1,lat2,lon2, GeodesicMask.DISTANCE_IN | GeodesicMask.LATITUDE | GeodesicMask. LONGITUDE);
         return line.Azimuth();
     }
+    
+    private double calcSlope(GeoPoint p1, GeoPoint p2)
+    {
+        return (p1.getLatitude()-p2.getLatitude())/(p1.getLongitude()-p2.getLongitude());
+    }
+
+    private boolean participantHasFinished(GeoPoint endPointLeft, GeoPoint endPointRight, GeoPoint participantPoint)
+    {
+        return calcSlope(endPointLeft, participantPoint) == calcSlope(participantPoint, endPointRight);
+    }
 }
