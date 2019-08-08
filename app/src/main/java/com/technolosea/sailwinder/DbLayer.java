@@ -81,6 +81,17 @@ public class DbLayer {
             });
     }
 
+    public Map<String, Object> getTrackByUserId(String userId)
+    {
+        List<Map<String, Object>> tracks = db.collection("track").get();
+        for (int track_index = 0; track_index < tracks.length; ++track_index)
+        {
+            Map<String, Object> examined_track = tracks[track_index]
+            if (examined_track.get("userId") == userId)
+                return tracks[track_index];
+        }
+    }
+    
     public List<Mark> getMarks() {
         return marks;
     }
