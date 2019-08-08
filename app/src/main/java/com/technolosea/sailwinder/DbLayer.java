@@ -23,6 +23,7 @@ import java.util.Map;
 public class DbLayer {
     private static final String TAG = "DbLayer";
     private List<Mark> marks = new ArrayList();
+    private Mark lastMark;
     FirebaseFirestore db;
 
     public DbLayer() {
@@ -46,6 +47,8 @@ public class DbLayer {
                             m.gateType = GateType.valueOf(document.getString("gateType"));
                             m.order = document.getLong("order");
                             getMarks().add(m);
+                            if (m.gateType == "END")
+                                lastMark = m;
                         }
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
@@ -80,5 +83,10 @@ public class DbLayer {
 
     public List<Mark> getMarks() {
         return marks;
+    }
+    
+    public Mark getEndingMark()
+    {
+        return lastMark;
     }
 }
